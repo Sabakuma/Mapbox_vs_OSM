@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Swipe between maps</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<style>
+    body {
+        overflow: hidden;
+    }
+
+    body * {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+    }
+
+    .map-name-left {
+        position: absolute;
+        top: 10px; /* 名前の上部の位置調整 */
+        left: 10px; /* 名前の左側の位置調整 */
+        background: rgba(255, 255, 255, 0.8);
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        z-index: 1; /* コンテナ名を地図の上に表示 */
+    }
+    .map-name-right {
+        position: absolute;
+        top: 10px; /* 名前の上部の位置調整 */
+        right: 10px; /* 名前の左側の位置調整 */
+        background: rgba(255, 255, 255, 0.8);
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        z-index: 1; /* コンテナ名を地図の上に表示 */
+    }
+
+</style>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.css" type="text/css">
+<div id="comparison-container">
+    <div id="before-map" class="map">
+        <!-- Before Map 名前の表示を追加 -->
+        <div class="map-name-left">Streets-v11</div>
+    </div>
+    <div id="after-map" class="map">
+        <!-- After Map 名前の表示を追加 -->
+        <div class="map-name-right">OpenStreetMap</div>
+    </div>
+</div>
+
+<script>
+	mapboxgl.accessToken = 'YOUR_ACESSTOKEN';
+    const beforeMap = new mapboxgl.Map({
+        container: 'before-map',
+        // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [139.5, 35.5],
+        zoom: 8
+    });
+
+    const afterMap = new mapboxgl.Map({
+    container: 'after-map',
+    center: [139.5, 35.5],
+    zoom: 8,
+    style: {
+      version: 8,
+      sources: {
+        OSM: {
+          type: "raster",
+          tiles: [
+            "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          ],
+          tileSize: 256,
+          attribution:
+          "OpenStreetMap",
+        },
+      },
+      layers: [{
+        id: "BASEMAP",
+        type: "raster",
+        source: "OSM",
+        minzoom: 0,
+        maxzoom: 18,
+      }],
+    },      
+  });
+
+    // A selector or reference to HTML element
+    const container = '#comparison-container';
+
+    const map = new mapboxgl.Compare(beforeMap, afterMap, container, {
+        // Set this to enable comparing two maps by mouse movement:
+        // mousemove: true
+    });
+</script>
+
+</body>
+</html>
